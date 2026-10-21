@@ -128,6 +128,7 @@ export default {
         overwatch: { title: 'Overwatch', status: 'looking for a team…' },
         lastOfUs: { title: 'The Last of Us', status: 'story: loaded' },
         arkham: { title: 'Batman Arkham series', status: 'patrolling Gotham' },
+        zelda: { title: 'The Legend of Zelda: Tears of the Kingdom', status: 'exploring Hyrule' },
       },
     },
     manga: {
