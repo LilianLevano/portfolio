@@ -1,0 +1,280 @@
+:root {
+  /* Warm black + red, with a cream text colour so it never feels harsh. */
+  --ink: #0e0c0b;
+  --ink-2: #161210;
+  --ink-3: #211b18;
+  --line: #3a2f2a;
+  --cream: #f3ebdf;
+  --cream-dim: #c4b8aa;
+  --red: #c81d25; /* fills: cream text on it is 4.8:1 */
+  --red-bright: #ff5a5f; /* red text on ink: 6.4:1 */
+  --red-deep: #7a0f14;
+
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-body: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+  --font-comic: 'Bangers', 'Impact', 'Arial Black', sans-serif;
+
+  --gutter: clamp(1rem, 4vw, 3rem);
+  --max: 72rem;
+  --header-h: 5.5rem;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-h) + 1rem);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  overflow-x: clip;
+  background: var(--ink);
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+a {
+  color: inherit;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+::selection {
+  background: var(--red);
+  color: var(--cream);
+}
+
+:focus-visible {
+  outline: 3px solid var(--red-bright);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+  padding: 0.75rem 1rem;
+  background: var(--cream);
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: none;
+  border-radius: 6px;
+  transform: translateY(-200%);
+  transition: transform 0.2s var(--ease-out);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+  outline-color: var(--red);
+}
+
+/* ---------- Layout helpers ---------- */
+
+.container {
+  width: 100%;
+  max-width: var(--max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section {
+  position: relative;
+  padding-block: clamp(4.5rem, 10vw, 8rem);
+}
+
+.section-head {
+  display: grid;
+  gap: 0.9rem;
+  margin-bottom: clamp(2.25rem, 5vw, 3.5rem);
+  max-width: 42rem;
+}
+
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--red-bright);
+}
+
+.kicker::before {
+  content: '';
+  width: 2.25rem;
+  height: 2px;
+  background: currentColor;
+}
+
+.section-title {
+  font-size: clamp(2.1rem, 5.5vw, 3.6rem);
+}
+
+.section-intro {
+  color: var(--cream-dim);
+  max-width: 36rem;
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 3rem;
+  padding: 0.75rem 1.35rem;
+  border: 2px solid var(--cream);
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 1rem;
+  text-decoration: none;
+  color: var(--cream);
+  background: transparent;
+  cursor: pointer;
+  transition:
+    background-color 0.25s var(--ease-out),
+    color 0.25s var(--ease-out),
+    transform 0.25s var(--ease-out),
+    border-color 0.25s var(--ease-out);
+}
+
+.btn:hover,
+.btn:focus-visible {
+  background: var(--cream);
+  color: var(--ink);
+  transform: translateY(-2px);
+}
+
+.btn--primary {
+  background: var(--red);
+  border-color: var(--red);
+}
+
+.btn--primary:hover,
+.btn--primary:focus-visible {
+  background: var(--cream);
+  border-color: var(--cream);
+}
+
+.btn .arrow {
+  transition: transform 0.25s var(--ease-out);
+}
+
+.btn:hover .arrow,
+.btn:focus-visible .arrow {
+  transform: translateX(4px);
+}
+
+/* ---------- Scroll reveal (see src/directives/reveal.js) ---------- */
+
+.reveal {
+  transition:
+    opacity 0.8s var(--ease-out),
+    transform 0.8s var(--ease-out),
+    clip-path 0.9s var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.reveal:not(.is-visible) {
+  opacity: 0;
+}
+
+.reveal--up:not(.is-visible) {
+  transform: translateY(2.5rem);
+}
+
+.reveal--left:not(.is-visible) {
+  transform: translateX(-2.5rem);
+}
+
+.reveal--right:not(.is-visible) {
+  transform: translateX(2.5rem);
+}
+
+.reveal--scale:not(.is-visible) {
+  transform: scale(0.94);
+}
+
+.reveal--clip {
+  clip-path: inset(0 0 0 0);
+}
+
+.reveal--clip:not(.is-visible) {
+  clip-path: inset(0 100% 0 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    transition-delay: 0ms !important;
+  }
+
+  .reveal:not(.is-visible) {
+    opacity: 1;
+    transform: none;
+    clip-path: none;
+  }
+}

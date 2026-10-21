@@ -3,9 +3,9 @@
 ## Purpose
 This portfolio should show visitors who the person or studio is and what
 they make. Keep these choices across new chats:
-Audience: [copy your chosen audience here]
-Visual direction: [copy your key style choices here]
-Important choice and why: [copy one lasting decision and its reason here]
+Audience: Employers, people who wants to learn about my skills
+Visual direction: Use black and red colors, use some animations, but keep it professional.
+Important choice and why: /
 Keep it static: visitors view work and use approved contact links; this
 exercise does not need accounts, a message inbox or a backend.
 

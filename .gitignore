@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-ssr/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Reference material (private background documents, not for publication)
+reference-materials/
+reference-material/
+
+# Logs and editor/OS files
+npm-debug.log*
+*.log
+.vite/
+.DS_Store
+Thumbs.db
+.idea/
