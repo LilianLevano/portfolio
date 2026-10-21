@@ -39,6 +39,16 @@ export default {
       studies: 'Graduaat Programmeren, 2e année',
       lookingFor: 'stage logiciel/web',
     },
+    quiz: {
+      question: 'Voir le profil de Lilian ?',
+      hint: 'choisis une valeur pour continuer',
+      srTrue: 'oui, afficher le profil',
+      srFalse: 'non, ne pas afficher',
+      yes: 'Bon choix. Chargement du profil…',
+      no: 'Bien essayé… ce profil est trop bien pour être caché.',
+      override: 'affiché quand même',
+      reset: 'rejouer',
+    },
   },
   about: {
     kicker: 'À propos',
@@ -107,16 +117,23 @@ export default {
     title: 'Centres d’intérêt',
     games: {
       heading: 'Journal de survie : jeux vidéo',
-      entries: [
-        { game: 'Project Zomboid', status: 'toujours en train de survivre' },
-        { game: 'Overwatch', status: "recherche d'équipe…" },
-        { game: 'The Last of Us', status: 'histoire : chargée' },
-        { game: 'Série Batman Arkham', status: 'patrouille à Gotham' },
-      ],
+      carousel: 'carrousel',
+      slide: 'diapositive',
+      position: '{n} sur {total}',
+      covers: 'Jaquettes des jeux',
+      pick: 'Choisir un jeu',
+      prev: 'Jeu précédent',
+      next: 'Jeu suivant',
+      items: {
+        zomboid: { title: 'Project Zomboid', status: 'toujours en train de survivre' },
+        overwatch: { title: 'Overwatch', status: "recherche d'équipe…" },
+        lastOfUs: { title: 'The Last of Us', status: 'histoire : chargée' },
+        arkham: { title: 'Série Batman Arkham', status: 'patrouille à Gotham' },
+      },
     },
     manga: {
       heading: 'Manga',
-      bubble: "L'Attaque des Titans !",
+      bubble: "L'Attaque des Titans",
       caption: 'Manga préféré',
     },
     comics: {
@@ -125,6 +142,7 @@ export default {
       caption: 'Comics préférés',
     },
     exit: 'Retour à la réalité',
+    credits: 'Jaquettes et illustrations © leurs propriétaires respectifs.',
   },
   contact: {
     kicker: 'Contact',

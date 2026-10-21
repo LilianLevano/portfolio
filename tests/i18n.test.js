@@ -10,6 +10,7 @@ import {
   resolveInitialLocale,
   applyDocumentLocale,
 } from '../src/i18n/index.js'
+import { GAMES } from '../src/data/links.js'
 
 // Flattens nested messages into "a.b.c" paths so the locales can be compared.
 function keyPaths(node, prefix = '') {
@@ -57,6 +58,17 @@ describe('translations', () => {
         else if (node && typeof node === 'object') Object.values(node).forEach(walk)
       }
       walk(messages[locale])
+    }
+  })
+
+  it('has a title and status for every game in src/data', () => {
+    for (const locale of LOCALES) {
+      for (const { id } of GAMES) {
+        expect(Object.keys(messages[locale].interests.games.items[id] ?? {}), `${locale}: ${id}`).toEqual([
+          'title',
+          'status',
+        ])
+      }
     }
   })
 

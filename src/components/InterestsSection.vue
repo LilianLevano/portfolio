@@ -1,7 +1,60 @@
 <script setup>
 import { useI18n } from '../i18n/index.js'
+import GamesCarousel from './GamesCarousel.vue'
 
 const { t } = useI18n()
+
+// Bat silhouette (viewBox 0 0 100 50). The wings are separate paths so they can flap.
+const BAT = {
+  wingLeft: 'M45 19 C38 12 30 7 24 8 C17 9 9 11 2 15 Q9.5 20 11 31 Q17.5 24 24 33 Q30 26 36 34 Q41 28 45 30 Z',
+  wingRight: 'M55 19 C62 12 70 7 76 8 C83 9 91 11 98 15 Q90.5 20 89 31 Q82.5 24 76 33 Q70 26 64 34 Q59 28 55 30 Z',
+  body: 'M50 14 L53 9.5 L53.8 16.5 C55.6 18.5 56 23 55.2 28 C54.4 33 52.4 36.5 50 39 C47.6 36.5 45.6 33 44.8 28 C44 23 44.4 18.5 46.2 16.5 L47 9.5 Z',
+}
+
+// Comics hover swarm: each bat rises from behind Batman (x/y in % of the panel) and leaves
+// through the top or a side (dx/dy in % of the panel's width/height).
+const BATS = [
+  { x: 50, y: 60, dx: -62, dy: -80, size: 3.4, dur: 2.4, delay: 0 },
+  { x: 55, y: 64, dx: 56, dy: -86, size: 2.8, dur: 2.2, delay: 0.15 },
+  { x: 45, y: 68, dx: -26, dy: -98, size: 3.8, dur: 2.7, delay: 0.35 },
+  { x: 60, y: 70, dx: 64, dy: -46, size: 2.4, dur: 2, delay: 0.55 },
+  { x: 40, y: 66, dx: -68, dy: -42, size: 2.6, dur: 2.1, delay: 0.75 },
+  { x: 52, y: 56, dx: 20, dy: -90, size: 2.2, dur: 2.3, delay: 0.95 },
+  { x: 47, y: 72, dx: -48, dy: -92, size: 3.2, dur: 2.6, delay: 1.15 },
+  { x: 57, y: 60, dx: 38, dy: -72, size: 2.6, dur: 2.2, delay: 1.35 },
+  { x: 50, y: 66, dx: -6, dy: -102, size: 3, dur: 2.5, delay: 1.55 },
+  { x: 43, y: 62, dx: -40, dy: -70, size: 2.2, dur: 2, delay: 1.75 },
+  { x: 62, y: 66, dx: 70, dy: -70, size: 3, dur: 2.4, delay: 1.95 },
+  { x: 38, y: 72, dx: -66, dy: -86, size: 2.4, dur: 2.3, delay: 2.15 },
+].map((bat, i) => ({
+  '--x': `${bat.x}%`,
+  '--y': `${bat.y}%`,
+  '--dx': `${bat.dx}cqw`,
+  '--dy': `${bat.dy}cqh`,
+  '--tilt': `${Math.sign(bat.dx) * 14}deg`,
+  '--size': `${bat.size}rem`,
+  '--dur': `${bat.dur}s`,
+  '--delay': `${bat.delay}s`,
+  '--flap': `${0.16 + (i % 3) * 0.04}s`,
+}))
+
+// Manga hover: tiny explosions popping one after another around the Titan.
+const BOOMS = [
+  { x: 22, y: 20, size: 3, delay: 0 },
+  { x: 76, y: 14, size: 2.4, delay: 0.25 },
+  { x: 62, y: 40, size: 3.4, delay: 0.5 },
+  { x: 28, y: 46, size: 2.2, delay: 0.75 },
+  { x: 84, y: 54, size: 2.8, delay: 1 },
+  { x: 46, y: 24, size: 2, delay: 1.2 },
+  { x: 14, y: 62, size: 2.4, delay: 1.4 },
+  { x: 78, y: 32, size: 2, delay: 1.6 },
+].map((boom, i) => ({
+  '--x': `${boom.x}%`,
+  '--y': `${boom.y}%`,
+  '--size': `${boom.size}rem`,
+  '--delay': `${boom.delay}s`,
+  '--turn': `${i * 47}deg`,
+}))
 </script>
 
 <template>
@@ -21,47 +74,69 @@ const { t } = useI18n()
         </header>
 
         <div class="page">
-          <!-- Panel 1: retro survival HUD -->
+          <!-- Panel 1: retro game-select screen with the covers -->
           <article class="panel panel--hud" aria-labelledby="games-title" v-reveal="'up'">
-            <div class="hud">
-              <div class="hud__top" aria-hidden="true">
-                <span>HP</span>
-                <span class="hud__bar"><span></span></span>
-                <span>LOG.TXT</span>
-              </div>
-              <h3 id="games-title" class="hud__title">{{ t('interests.games.heading') }}</h3>
-              <ol class="hud__log">
-                <li v-for="(entry, i) in t('interests.games.entries')" :key="entry.game">
-                  <span class="hud__day" aria-hidden="true">&gt; 0{{ i + 1 }}</span>
-                  <strong>{{ entry.game }}</strong>{{ ' ' }}
-                  <span class="hud__status">— {{ entry.status }}</span>
-                </li>
-              </ol>
-              <span class="hud__cursor" aria-hidden="true">_</span>
-            </div>
+            <GamesCarousel />
           </article>
 
-          <!-- Panel 2: manga, black & white speed lines -->
-          <article class="panel panel--manga" aria-labelledby="manga-title" v-reveal.delay="'scale'">
+          <!-- Panel 2: manga, Attack on Titan art; tiny explosions on hover -->
+          <article class="panel panel--art panel--manga" aria-labelledby="manga-title" v-reveal.delay="'scale'">
+            <img
+              class="panel__art"
+              src="/aot-background.webp"
+              alt=""
+              width="560"
+              height="800"
+              loading="lazy"
+              decoding="async"
+            />
+            <div class="fx" aria-hidden="true">
+              <span v-for="(boom, i) in BOOMS" :key="i" class="boom" :style="boom"></span>
+            </div>
             <h3 id="manga-title" class="panel__label">{{ t('interests.manga.heading') }}</h3>
-            <p class="speech">{{ t('interests.manga.bubble') }}</p>
+            <p class="title-card"><span>{{ t('interests.manga.bubble') }}</span></p>
             <p class="panel__caption">{{ t('interests.manga.caption') }}</p>
           </article>
 
-          <!-- Panel 3: comics, halftone + burst -->
-          <article class="panel panel--comics" aria-labelledby="comics-title" v-reveal.delay="'scale'">
-            <h3 id="comics-title" class="panel__label">{{ t('interests.comics.heading') }}</h3>
-            <div class="burst">
-              <svg viewBox="0 0 200 200" aria-hidden="true" focusable="false">
-                <polygon
-                  points="100,5 118,62 172,30 142,84 196,100 142,116 172,170 118,138 100,195 82,138 28,170 58,116 4,100 58,84 28,30 82,62"
-                />
-              </svg>
-              <p class="burst__text">{{ t('interests.comics.bubble') }}</p>
+          <!-- Panel 3: comics, Batman art; a gold ticker and a bat swarm on hover -->
+          <article class="panel panel--art panel--comics" aria-labelledby="comics-title" v-reveal.delay="'scale'">
+            <img
+              class="panel__art"
+              src="/batman-background.avif"
+              alt=""
+              width="2000"
+              height="2667"
+              loading="lazy"
+              decoding="async"
+            />
+            <div class="fx bats" aria-hidden="true">
+              <span v-for="(bat, i) in BATS" :key="i" class="bat" :style="bat">
+                <svg class="bat__body" viewBox="0 0 100 50" focusable="false">
+                  <path class="bat__wing bat__wing--left" :d="BAT.wingLeft" />
+                  <path class="bat__wing bat__wing--right" :d="BAT.wingRight" />
+                  <path :d="BAT.body" />
+                </svg>
+              </span>
             </div>
+            <h3 id="comics-title" class="panel__label">{{ t('interests.comics.heading') }}</h3>
+            <p class="ticker">
+              <span class="visually-hidden">{{ t('interests.comics.bubble') }}</span>
+              <span class="ticker__track" aria-hidden="true">
+                <span v-for="n in 8" :key="n" class="ticker__item">
+                  <span class="ticker__text">{{ t('interests.comics.bubble') }}</span>
+                  <svg class="ticker__bat" viewBox="0 0 100 50" focusable="false">
+                    <path :d="BAT.wingLeft" />
+                    <path :d="BAT.wingRight" />
+                    <path :d="BAT.body" />
+                  </svg>
+                </span>
+              </span>
+            </p>
             <p class="panel__caption">{{ t('interests.comics.caption') }}</p>
           </article>
         </div>
+
+        <p class="credits">{{ t('interests.credits') }}</p>
 
         <a class="exit" href="#contact">
           {{ t('interests.exit') }} <span aria-hidden="true">↓</span>
@@ -167,6 +242,8 @@ const { t } = useI18n()
 }
 
 .panel__label {
+  position: relative;
+  z-index: 2;
   display: inline-block;
   padding: 0.15rem 0.6rem;
   background: var(--paper-ink);
@@ -180,152 +257,187 @@ const { t } = useI18n()
 
 .panel__caption {
   position: relative;
+  z-index: 2;
   margin-top: 1rem;
   font-family: var(--font-mono);
   font-size: 0.8125rem;
   font-weight: 600;
 }
 
-/* Survival HUD */
+/* Games panel: dark frame around the game-select screen (see GamesCarousel.vue). */
 .panel--hud {
   padding: 0.6rem;
   background: var(--paper-ink);
 }
 
-.hud {
-  position: relative;
-  height: 100%;
-  padding: 1.25rem;
-  border: 2px solid #3d2f00;
-  background:
-    repeating-linear-gradient(to bottom, rgb(255 176 0 / 0.05) 0 2px, transparent 2px 4px),
-    #120d05;
-  color: var(--hud);
-  font-family: var(--font-mono);
-}
-
-.hud__top {
+/* Art panels: the illustration fills the panel, the text sits on top as comic captions. */
+.panel--art {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 0.75rem;
-  opacity: 0.85;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: 26rem;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--paper-ink);
 }
 
-.hud__bar {
-  flex: 1;
-  height: 0.6rem;
-  border: 1px solid var(--hud);
-}
-
-.hud__bar span {
-  display: block;
-  width: 72%;
+.panel__art {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
   height: 100%;
-  background: var(--hud);
-  animation: hp 4s ease-in-out infinite alternate;
+  object-fit: cover;
+  transition:
+    transform 0.8s var(--ease-out),
+    filter 0.8s var(--ease-out);
 }
 
-@keyframes hp {
-  to {
-    width: 58%;
-  }
+/* Darker bottom edge behind the caption. */
+.panel--art::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(to top, rgb(14 12 11 / 0.6), transparent 35%);
+  pointer-events: none;
 }
 
-.hud__title {
-  margin: 1.25rem 0 1rem;
-  font-family: var(--font-mono);
-  font-size: 1.05rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
+.panel--art .panel__caption {
+  margin-top: auto;
+  padding: 0.2rem 0.5rem;
+  background: var(--paper-ink);
+  color: var(--paper);
 }
 
-.hud__log {
-  display: grid;
-  gap: 0.6rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  font-size: 0.9rem;
-}
-
-.hud__log strong {
-  color: #fff1cc;
-  font-weight: 600;
-}
-
-.hud__day {
-  margin-right: 0.5rem;
-  opacity: 0.75;
-}
-
-.hud__status {
-  opacity: 0.9;
-}
-
-.hud__cursor {
-  display: inline-block;
-  margin-top: 0.75rem;
-  animation: blink 1s steps(1) infinite;
-}
-
-@keyframes blink {
-  50% {
-    opacity: 0;
-  }
+/* Hover effects layer: hidden, and its animations paused, until the panel is hovered. */
+.fx {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s var(--ease-out);
 }
 
 /* Manga panel */
 .panel--manga {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  overflow: hidden;
-  background-color: #fffaf0;
-  background-image: repeating-conic-gradient(from 0deg at 70% 55%, rgb(20 16 16 / 0.12) 0deg 2deg, transparent 2deg 9deg);
-  min-height: 15rem;
+  container-type: inline-size;
 }
 
-.speech {
-  position: relative;
-  align-self: center;
-  margin: 1.5rem 0 0.5rem;
-  padding: 0.9rem 1.2rem;
-  border: 3px solid var(--paper-ink);
-  border-radius: 50%;
-  background: #fff;
-  font-family: var(--font-comic);
-  font-size: clamp(1.4rem, 4vw, 1.8rem);
+.panel--manga .panel__art {
+  object-position: 50% 30%;
+}
+
+/* Title card lit like the art (its peach glow #fff6ec → #feb098, crimson halo),
+   on the dark horizon just above Eren. */
+.title-card {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 31%;
+  z-index: 2;
+  padding: 0.75rem 1.25rem;
+  background: radial-gradient(closest-side, rgb(33 13 16 / 0.65), transparent);
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 11cqi, 2.4rem);
+  font-weight: 800;
+  line-height: 0.95;
   letter-spacing: 0.04em;
   text-align: center;
-  line-height: 1.1;
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  text-transform: uppercase;
+  text-wrap: balance;
 }
 
-.speech::after {
+.title-card span {
+  display: inline-block;
+  padding-block: 0.1em;
+  background: linear-gradient(#fff6ec 35%, #feb098);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 0.5rem rgb(178 61 66 / 0.9)) drop-shadow(0 1px 1px #210d10);
+  transition: filter 0.5s var(--ease-out);
+}
+
+/* The dark halo is the ink outline that makes the bursts read against the red sky. */
+.boom {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--size);
+  aspect-ratio: 1;
+  margin: calc(var(--size) / -2) 0 0 calc(var(--size) / -2);
+  filter: drop-shadow(0 0 1.5px #210d10) drop-shadow(0 0 1px #210d10);
+  transform: rotate(var(--turn));
+}
+
+.boom::before,
+.boom::after {
   content: '';
   position: absolute;
-  left: 22%;
-  bottom: -18px;
-  border-width: 18px 10px 0;
-  border-style: solid;
-  border-color: var(--paper-ink) transparent transparent;
-  transform: skewX(20deg);
+  inset: 0;
+  animation: boom-fire 1.8s var(--delay) cubic-bezier(0.2, 0.9, 0.3, 1) infinite both;
+  animation-play-state: paused;
 }
 
-.panel--manga:hover .speech {
-  transform: rotate(-3deg) scale(1.06);
+/* Fireball in the art's own colours: white-hot core, peach glow, Titan-eye orange, crimson. */
+.boom::before {
+  background: radial-gradient(closest-side, #fff 0 12%, #fff6ec 22%, #feb098 38%, #f27460 62%, #b23d42 92%);
+  clip-path: polygon(
+    50% 0%, 54.9% 31.6%, 70% 15.4%, 63.4% 36.6%, 90.7% 26.5%, 68.4% 45.1%,
+    86% 50%, 68.4% 54.9%, 93.3% 75%, 63.4% 63.4%, 71% 86.4%, 54.9% 68.4%,
+    50% 96%, 45.1% 68.4%, 31% 82.9%, 36.6% 63.4%, 7.6% 74.5%, 31.6% 54.9%,
+    10% 50%, 31.6% 45.1%, 11% 27.5%, 36.6% 36.6%, 31.5% 18%, 45.1% 31.6%
+  );
+}
+
+/* Sparks: a ring of short rays flying outwards. */
+.boom::after {
+  inset: -45%;
+  background: repeating-conic-gradient(#feb098 0 5deg, transparent 5deg 36deg);
+  -webkit-mask: radial-gradient(closest-side, transparent 58%, #000 62% 80%, transparent 84%);
+  mask: radial-gradient(closest-side, transparent 58%, #000 62% 80%, transparent 84%);
+  animation-name: boom-sparks;
+  animation-timing-function: ease-out;
+}
+
+@keyframes boom-fire {
+  0% {
+    opacity: 1;
+    transform: scale(0) rotate(-20deg);
+  }
+  12% {
+    opacity: 1;
+    transform: scale(1.1) rotate(0deg);
+  }
+  30%,
+  100% {
+    opacity: 0;
+    transform: scale(0.6) rotate(12deg);
+  }
+}
+
+@keyframes boom-sparks {
+  0%,
+  5% {
+    opacity: 0;
+    transform: scale(0.35);
+  }
+  10% {
+    opacity: 1;
+  }
+  34%,
+  100% {
+    opacity: 0;
+    transform: scale(1.15);
+  }
 }
 
 /* Comics panel */
-.panel--comics {
-  overflow: hidden;
-  background-color: var(--comic-red);
-  background-image: radial-gradient(rgb(20 16 16 / 0.3) 1.6px, transparent 2px);
-  background-size: 10px 10px;
-  color: var(--paper);
-  min-height: 15rem;
+.panel--comics .panel__art {
+  object-position: 50% 25%;
+  filter: brightness(0.82);
 }
 
 .panel--comics .panel__label {
@@ -333,48 +445,222 @@ const { t } = useI18n()
   color: var(--paper-ink);
 }
 
-.panel--comics .panel__caption {
-  display: inline-block;
-  padding: 0.2rem 0.5rem;
-  background: var(--paper-ink);
-  color: var(--paper);
-}
-
-.burst {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: min(100%, 15rem);
-  margin: 0.5rem auto 0;
-  aspect-ratio: 1;
-}
-
-.burst svg {
+/* The bat-signal in the top of the art lights up on hover. */
+.panel--comics::before {
+  content: '';
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  fill: #ffe36e;
-  stroke: var(--paper-ink);
-  stroke-width: 4;
-  stroke-linejoin: round;
-  transition: transform 0.5s var(--ease-out);
+  z-index: 1;
+  background: radial-gradient(circle at 62% 6%, rgb(250 204 80 / 0.4), transparent 45%);
+  mix-blend-mode: screen;
+  opacity: 0;
+  transition: opacity 0.6s var(--ease-out);
+  pointer-events: none;
 }
 
-.panel--comics:hover .burst svg {
-  transform: rotate(14deg) scale(1.06);
-}
-
-.burst__text {
-  position: relative;
-  max-width: 60%;
-  font-family: var(--font-comic);
-  font-size: clamp(1.4rem, 4vw, 1.9rem);
-  line-height: 1;
-  letter-spacing: 0.04em;
-  text-align: center;
-  color: var(--paper-ink);
+/* Gold taken from the bat-signal in the art (#facc50 → #c38934) on Gotham black (#0c0b09). */
+.ticker {
+  position: absolute;
+  top: 62%;
+  left: -15%;
+  right: -15%;
+  z-index: 2;
+  overflow: hidden;
+  /* The band overhangs the panel by 15%; start the text where the panel starts. */
+  padding: 0.35rem 0 0.35rem calc(15% + 0.75rem);
+  border-block: 2px solid #c38934;
+  background: rgb(12 11 9 / 0.88);
+  box-shadow: 0 0.75rem 1.5rem rgb(0 0 0 / 0.5);
   transform: rotate(-6deg);
+}
+
+.ticker__track {
+  display: flex;
+  width: max-content;
+  animation: ticker 18s linear infinite;
+  animation-play-state: paused;
+}
+
+/* Eight identical items: moving by half the track loops seamlessly. */
+.ticker__item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding-inline-end: 0.8rem;
+}
+
+.ticker__text {
+  font-family: var(--font-comic);
+  font-size: 1.75rem;
+  line-height: 1.15;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  color: #facc50;
+  background: linear-gradient(#ffe39a 15%, #facc50 50%, #c38934 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.ticker__bat {
+  width: 2rem;
+  fill: #c38934;
+}
+
+@keyframes ticker {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Gold rim light, as if the bats were lit by the bat-signal. */
+.bats {
+  container-type: size;
+  filter: drop-shadow(0 0 4px rgb(250 204 80 / 0.35));
+}
+
+.bat {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--size);
+  margin-left: calc(var(--size) / -2);
+  animation: bat-x var(--dur) var(--delay) ease-in infinite both;
+}
+
+.bat__body {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  fill: #0c0b09;
+  stroke: rgb(250 204 80 / 0.75);
+  stroke-width: 1;
+  animation: bat-y var(--dur) var(--delay) cubic-bezier(0.25, 0.6, 0.45, 1) infinite both;
+}
+
+.bat__body path {
+  vector-effect: non-scaling-stroke;
+}
+
+.bat__wing {
+  transform-box: view-box;
+  animation: flap-left var(--flap) ease-in-out infinite alternate;
+}
+
+.bat__wing--left {
+  transform-origin: 45px 22px;
+}
+
+.bat__wing--right {
+  transform-origin: 55px 22px;
+  animation-name: flap-right;
+}
+
+.bat,
+.bat__body,
+.bat__wing {
+  animation-play-state: paused;
+}
+
+/* Sideways and upwards use different easings, so each bat flies a curve. */
+@keyframes bat-x {
+  to {
+    transform: translateX(var(--dx));
+  }
+}
+
+@keyframes bat-y {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.45);
+  }
+  12%,
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(var(--dy)) scale(1.1) rotate(var(--tilt));
+  }
+}
+
+@keyframes flap-left {
+  from {
+    transform: rotate(22deg);
+  }
+  to {
+    transform: rotate(-16deg);
+  }
+}
+
+@keyframes flap-right {
+  from {
+    transform: rotate(-22deg);
+  }
+  to {
+    transform: rotate(16deg);
+  }
+}
+
+@media (hover: hover) {
+  .panel--art:hover .panel__art {
+    transform: scale(1.05);
+  }
+
+  .panel--art:hover .fx,
+  .panel--comics:hover::before {
+    opacity: 1;
+  }
+
+  .panel--manga:hover .title-card span {
+    filter: drop-shadow(0 0 0.9rem rgb(242 116 96 / 0.95)) drop-shadow(0 1px 1px #210d10);
+  }
+
+  .panel--manga:hover .boom::before,
+  .panel--manga:hover .boom::after,
+  .panel--comics:hover .ticker__track,
+  .panel--comics:hover .bat,
+  .panel--comics:hover .bat__body,
+  .panel--comics:hover .bat__wing {
+    animation-play-state: running;
+  }
+
+  .panel--comics:hover .panel__art {
+    filter: brightness(1);
+  }
+}
+
+/* Touch screens have no hover: the explosions and bats play once as the panel scrolls in. */
+@media (hover: none) {
+  .panel--art.is-visible .fx {
+    opacity: 1;
+  }
+
+  .panel--manga.is-visible .boom::before,
+  .panel--manga.is-visible .boom::after,
+  .panel--comics.is-visible .bat,
+  .panel--comics.is-visible .bat__body {
+    animation-play-state: running;
+    animation-iteration-count: 1;
+  }
+
+  .panel--comics.is-visible .bat__wing {
+    animation-play-state: running;
+    animation-iteration-count: 20;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx {
+    display: none;
+  }
+}
+
+.credits {
+  margin-top: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  opacity: 0.75;
 }
 
 /* Way back out */
@@ -382,7 +668,7 @@ const { t } = useI18n()
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  margin-top: 2.75rem;
+  margin-top: 2rem;
   min-height: 3rem;
   padding: 0.7rem 1.3rem;
   border: 3px solid var(--paper-ink);
@@ -404,6 +690,11 @@ const { t } = useI18n()
 
 .world :focus-visible {
   outline-color: var(--paper-ink);
+}
+
+/* An ink outline would vanish on the dark game screen. */
+.panel--hud :focus-visible {
+  outline-color: #fff1cc;
 }
 
 @media (min-width: 48rem) {

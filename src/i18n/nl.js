@@ -39,6 +39,16 @@ export default {
       studies: 'Graduaat Programmeren, 2e jaar',
       lookingFor: 'stage software/web',
     },
+    quiz: {
+      question: 'Profiel van Lilian zien?',
+      hint: 'kies een waarde om verder te gaan',
+      srTrue: 'ja, toon het profiel',
+      srFalse: 'nee, niet tonen',
+      yes: 'Goede keuze. Profiel laden…',
+      no: 'Nice try… dit profiel is te goed om te verbergen.',
+      override: 'toch tonen',
+      reset: 'opnieuw',
+    },
   },
   about: {
     kicker: 'Over mij',
@@ -107,16 +117,23 @@ export default {
     title: 'Persoonlijke interesses',
     games: {
       heading: 'Survival log: videogames',
-      entries: [
-        { game: 'Project Zomboid', status: 'nog steeds aan het overleven' },
-        { game: 'Overwatch', status: 'team zoeken…' },
-        { game: 'The Last of Us', status: 'verhaal: geladen' },
-        { game: 'Batman Arkham-reeks', status: 'patrouille in Gotham' },
-      ],
+      carousel: 'carrousel',
+      slide: 'dia',
+      position: '{n} van {total}',
+      covers: 'Spelcovers',
+      pick: 'Kies een spel',
+      prev: 'Vorig spel',
+      next: 'Volgend spel',
+      items: {
+        zomboid: { title: 'Project Zomboid', status: 'nog steeds aan het overleven' },
+        overwatch: { title: 'Overwatch', status: 'team zoeken…' },
+        lastOfUs: { title: 'The Last of Us', status: 'verhaal: geladen' },
+        arkham: { title: 'Batman Arkham-reeks', status: 'patrouille in Gotham' },
+      },
     },
     manga: {
       heading: 'Manga',
-      bubble: 'Attack on Titan!',
+      bubble: 'Attack on Titan',
       caption: 'Favoriete manga',
     },
     comics: {
@@ -125,6 +142,7 @@ export default {
       caption: 'Favoriete comics',
     },
     exit: 'Terug naar de werkelijkheid',
+    credits: 'Covers en illustraties © de respectieve eigenaars.',
   },
   contact: {
     kicker: 'Contact',

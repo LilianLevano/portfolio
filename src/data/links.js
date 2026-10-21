@@ -25,3 +25,11 @@ export const PROJECTS = [
     accent: 'ink',
   },
 ]
+
+// Game covers in public/ (width/height are the files' own pixel sizes).
+export const GAMES = [
+  { id: 'zomboid', cover: '/zomboid.jpg', width: 191, height: 263 },
+  { id: 'overwatch', cover: '/Overwatch_cover_art.jpg', width: 250, height: 357 },
+  { id: 'lastOfUs', cover: '/thelastofus.jpg', width: 1200, height: 1800 },
+  { id: 'arkham', cover: '/batman-arkham-game.jpg', width: 1920, height: 1080 },
+]

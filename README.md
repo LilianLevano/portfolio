@@ -21,10 +21,10 @@ npm test          # unit tests (Vitest) voor de vertaallogica
 
 - `src/components/`: secties (`HeroSection`, `AboutSection`, `SkillsSection`,
   `ProjectsSection`, `InterestsSection`, `ContactSection`) plus `SiteHeader`,
-  `SiteFooter`, `LanguageSwitcher`, `ExerciseNotice` en `SkillIcon`
+  `SiteFooter`, `LanguageSwitcher`, `ExerciseNotice`, `SkillIcon` en `GamesCarousel`
 - `src/i18n/`: alle teksten in `nl.js` (standaard), `fr.js` en `en.js`; `index.js`
   bewaart de taalkeuze in `localStorage` en zet `<html lang>`, titel en meta description
-- `src/data/links.js`: projectlinks, technieken en de goedgekeurde contactlinks
+- `src/data/links.js`: projectlinks, technieken, gamecovers en de goedgekeurde contactlinks
 - `src/directives/reveal.js`: scroll-animaties met IntersectionObserver
   (uitgeschakeld bij `prefers-reduced-motion`)
 

@@ -1,7 +1,28 @@
 <script setup>
+import { ref, nextTick } from 'vue'
 import { useI18n } from '../i18n/index.js'
 
 const { t } = useI18n()
+
+// The profile card starts as a question: null = unanswered, true/false = the visitor's pick.
+// Either answer shows the profile; false just gets a cheeky override first.
+const answer = ref(null)
+const preview = ref(null)
+const codeEl = ref(null)
+const yesButton = ref(null)
+
+async function choose(value) {
+  answer.value = value
+  preview.value = null
+  await nextTick()
+  codeEl.value?.focus()
+}
+
+async function reset() {
+  answer.value = null
+  await nextTick()
+  yesButton.value?.focus()
+}
 </script>
 
 <template>
@@ -39,11 +60,57 @@ const { t } = useI18n()
       </div>
 
       <figure class="code-card" :aria-label="t('hero.codeLabel')">
-        <div class="code-card__bar" aria-hidden="true">
-          <span></span><span></span><span></span>
-          <code class="code-card__file">lilian.js</code>
+        <div class="code-card__bar">
+          <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+          <code class="code-card__file" aria-hidden="true">lilian.js</code>
+          <button v-if="answer !== null" type="button" class="code-card__reset" @click="reset">
+            <span aria-hidden="true">↺</span> {{ t('hero.quiz.reset') }}
+          </button>
         </div>
-        <pre class="code-card__body"><code><span class="l"><span class="k">const</span> lilian = {</span><span class="l">  background: <span class="s">'{{ t('hero.code.background') }}'</span>,</span><span class="l">  strongestSkill: <span class="s s--hot">'{{ t('hero.code.strongest') }}'</span>,</span><span class="l">  studies: <span class="s">'{{ t('hero.code.studies') }}'</span>,</span><span class="l">  school: <span class="s">'Erasmushogeschool Brussel'</span>,</span><span class="l">  lookingFor: <span class="s">'{{ t('hero.code.lookingFor') }}'</span>,</span><span class="l">};</span></code></pre>
+
+        <div v-if="answer === null" class="code-card__body quiz">
+          <p class="l"><span class="c">// {{ t('hero.quiz.question') }}</span></p>
+          <p class="l">
+            <span class="k">let</span> showProfile =
+            <span class="quiz__blank" :class="preview !== null && `quiz__blank--${preview}`" aria-hidden="true">{{
+              preview === null ? '?' : String(preview)
+            }}</span>;
+          </p>
+          <div class="quiz__choices l">
+            <button
+              ref="yesButton"
+              type="button"
+              class="quiz__btn quiz__btn--true"
+              @click="choose(true)"
+              @mouseenter="preview = true"
+              @focus="preview = true"
+              @mouseleave="preview = null"
+              @blur="preview = null"
+            >
+              true<span class="visually-hidden"> ({{ t('hero.quiz.srTrue') }})</span>
+            </button>
+            <button
+              type="button"
+              class="quiz__btn quiz__btn--false"
+              @click="choose(false)"
+              @mouseenter="preview = false"
+              @focus="preview = false"
+              @mouseleave="preview = null"
+              @blur="preview = null"
+            >
+              false<span class="visually-hidden"> ({{ t('hero.quiz.srFalse') }})</span>
+            </button>
+          </div>
+          <p class="l"><span class="c">// {{ t('hero.quiz.hint') }}</span></p>
+        </div>
+
+        <pre
+          v-else
+          ref="codeEl"
+          class="code-card__body is-answered"
+          :class="{ 'is-denied': answer === false }"
+          tabindex="-1"
+        ><code><span class="l"><span class="k">let</span> showProfile = <span class="k">{{ String(answer) }}</span>;</span><template v-if="answer"><span class="l"><span class="c">// {{ t('hero.quiz.yes') }}</span></span></template><template v-else><span class="l l--alert">// {{ t('hero.quiz.no') }}</span><span class="l">showProfile = <span class="k">true</span>; <span class="c">// {{ t('hero.quiz.override') }}</span></span></template><span class="l"><span class="k">const</span> lilian = {</span><span class="l">  background: <span class="s">'{{ t('hero.code.background') }}'</span>,</span><span class="l">  strongestSkill: <span class="s s--hot">'{{ t('hero.code.strongest') }}'</span>,</span><span class="l">  studies: <span class="s">'{{ t('hero.code.studies') }}'</span>,</span><span class="l">  school: <span class="s">'Erasmushogeschool Brussel'</span>,</span><span class="l">  lookingFor: <span class="s">'{{ t('hero.code.lookingFor') }}'</span>,</span><span class="l">};</span></code></pre>
       </figure>
     </div>
   </section>
@@ -197,14 +264,14 @@ const { t } = useI18n()
   border-bottom: 1px solid var(--line);
 }
 
-.code-card__bar span {
+.code-card__bar > span {
   width: 0.65rem;
   height: 0.65rem;
   border-radius: 50%;
   background: var(--line);
 }
 
-.code-card__bar span:first-child {
+.code-card__bar > span:first-child {
   background: var(--red);
 }
 
@@ -235,18 +302,147 @@ const { t } = useI18n()
   padding-left: 2ch;
   text-indent: -2ch;
   animation: type-in 0.5s var(--ease-out) both;
+  animation-delay: calc(var(--start, 0.9s) + var(--n, 0) * 0.15s);
 }
 
-.l:nth-child(1) { animation-delay: 0.9s; }
-.l:nth-child(2) { animation-delay: 1.05s; }
-.l:nth-child(3) { animation-delay: 1.2s; }
-.l:nth-child(4) { animation-delay: 1.35s; }
-.l:nth-child(5) { animation-delay: 1.5s; }
-.l:nth-child(6) { animation-delay: 1.65s; }
-.l:nth-child(7) { animation-delay: 1.8s; }
+/* Lines type in one after another; once answered there is no page-load wait. */
+.l:nth-child(2) { --n: 1; }
+.l:nth-child(3) { --n: 2; }
+.l:nth-child(4) { --n: 3; }
+.l:nth-child(5) { --n: 4; }
+.l:nth-child(6) { --n: 5; }
+.l:nth-child(7) { --n: 6; }
+.l:nth-child(8) { --n: 7; }
+.l:nth-child(9) { --n: 8; }
+.l:nth-child(10) { --n: 9; }
+
+.is-answered {
+  --start: 0.05s;
+}
+
+.is-answered:focus-visible {
+  outline-offset: -3px;
+}
+
+.is-denied {
+  animation: deny 0.45s var(--ease-out);
+}
+
+.l--alert {
+  color: var(--red-bright);
+}
 
 .k {
   color: var(--red-bright);
+}
+
+.c {
+  color: var(--cream-dim);
+  font-style: italic;
+  opacity: 0.8;
+}
+
+/* Question state */
+.quiz__blank {
+  display: inline-block;
+  min-width: 5.5ch;
+  padding: 0 0.4ch;
+  border-bottom: 2px solid var(--red-bright);
+  color: var(--cream);
+  text-align: center;
+  text-indent: 0;
+  animation: blank-blink 1.1s steps(1) infinite;
+}
+
+/* Only the "?" blinks; the underline stays put. */
+@keyframes blank-blink {
+  50% {
+    color: transparent;
+  }
+}
+
+.quiz__blank--true,
+.quiz__blank--false {
+  animation: none;
+}
+
+.quiz__blank--true {
+  color: var(--red-bright);
+}
+
+.quiz__choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding-block: 0.75rem;
+  text-indent: 0;
+}
+
+.quiz__btn {
+  min-width: 6.5rem;
+  min-height: 2.75rem;
+  padding: 0.4rem 1.1rem;
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  background: var(--ink);
+  color: var(--cream);
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s var(--ease-out),
+    border-color 0.2s var(--ease-out),
+    color 0.2s var(--ease-out),
+    transform 0.2s var(--ease-out);
+}
+
+.quiz__btn--true {
+  border-color: var(--red);
+  color: var(--red-bright);
+}
+
+.quiz__btn:hover,
+.quiz__btn:focus-visible {
+  transform: translateY(-2px);
+}
+
+.quiz__btn--true:hover,
+.quiz__btn--true:focus-visible {
+  background: var(--red);
+  color: var(--cream);
+}
+
+.quiz__btn--false:hover,
+.quiz__btn--false:focus-visible {
+  border-color: var(--cream-dim);
+  background: var(--ink-3);
+}
+
+.quiz__btn:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.code-card__reset {
+  min-height: 2rem;
+  margin-left: 0.75rem;
+  padding: 0.15rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--cream-dim);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition:
+    color 0.2s var(--ease-out),
+    border-color 0.2s var(--ease-out);
+}
+
+.code-card__reset:hover,
+.code-card__reset:focus-visible {
+  border-color: var(--red-bright);
+  color: var(--cream);
 }
 
 .s {
@@ -278,6 +474,17 @@ const { t } = useI18n()
   from {
     opacity: 0;
     transform: translateX(-0.5rem);
+  }
+}
+
+@keyframes deny {
+  20%,
+  60% {
+    transform: translateX(-6px);
+  }
+  40%,
+  80% {
+    transform: translateX(6px);
   }
 }
 

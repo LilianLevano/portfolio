@@ -39,6 +39,16 @@ export default {
       studies: 'Graduaat Programmeren, 2nd year',
       lookingFor: 'software/web internship',
     },
+    quiz: {
+      question: "See Lilian's profile?",
+      hint: 'pick a value to continue',
+      srTrue: 'yes, show the profile',
+      srFalse: "no, don't show it",
+      yes: 'Good choice. Loading profile…',
+      no: 'Nice try… this profile is too good to hide.',
+      override: 'showing it anyway',
+      reset: 'again',
+    },
   },
   about: {
     kicker: 'About',
@@ -106,16 +116,23 @@ export default {
     title: 'Personal interests',
     games: {
       heading: 'Survival log: video games',
-      entries: [
-        { game: 'Project Zomboid', status: 'still surviving' },
-        { game: 'Overwatch', status: 'looking for a team…' },
-        { game: 'The Last of Us', status: 'story: loaded' },
-        { game: 'Batman Arkham series', status: 'patrolling Gotham' },
-      ],
+      carousel: 'carousel',
+      slide: 'slide',
+      position: '{n} of {total}',
+      covers: 'Game covers',
+      pick: 'Choose a game',
+      prev: 'Previous game',
+      next: 'Next game',
+      items: {
+        zomboid: { title: 'Project Zomboid', status: 'still surviving' },
+        overwatch: { title: 'Overwatch', status: 'looking for a team…' },
+        lastOfUs: { title: 'The Last of Us', status: 'story: loaded' },
+        arkham: { title: 'Batman Arkham series', status: 'patrolling Gotham' },
+      },
     },
     manga: {
       heading: 'Manga',
-      bubble: 'Attack on Titan!',
+      bubble: 'Attack on Titan',
       caption: 'Favourite manga',
     },
     comics: {
@@ -124,6 +141,7 @@ export default {
       caption: 'Favourite comics',
     },
     exit: 'Back to reality',
+    credits: 'Game covers and artwork © their respective owners.',
   },
   contact: {
     kicker: 'Contact',
