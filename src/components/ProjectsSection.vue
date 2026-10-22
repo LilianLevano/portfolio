@@ -35,11 +35,18 @@ const { t } = useI18n()
               </ul>
             </div>
 
-            <a class="project__link" :href="project.url" target="_blank" rel="noopener noreferrer">
-              {{ t('projects.link') }}
-              <span class="visually-hidden">: {{ t(`projects.items.${project.id}.title`) }} {{ t('projects.newTab') }}</span>
-              <span class="project__arrow" aria-hidden="true">↗</span>
-            </a>
+            <div class="project__links">
+              <a class="project__link" :href="project.url" target="_blank" rel="noopener noreferrer">
+                {{ t('projects.link') }}
+                <span class="visually-hidden">: {{ t(`projects.items.${project.id}.title`) }} {{ t('projects.newTab') }}</span>
+                <span class="project__arrow" aria-hidden="true">↗</span>
+              </a>
+              <a v-if="project.live" class="project__link" :href="project.live" target="_blank" rel="noopener noreferrer">
+                {{ t('projects.liveLink') }}
+                <span class="visually-hidden">: {{ t(`projects.items.${project.id}.title`) }} {{ t('projects.newTab') }}</span>
+                <span class="project__arrow" aria-hidden="true">↗</span>
+              </a>
+            </div>
           </article>
         </li>
       </ol>
@@ -138,12 +145,18 @@ const { t } = useI18n()
   color: var(--cream);
 }
 
+.project__links {
+  display: grid;
+  gap: 0.75rem;
+  align-self: start;
+  justify-self: start;
+  justify-items: start;
+}
+
 .project__link {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  align-self: start;
-  justify-self: start;
   min-height: 2.75rem;
   padding: 0.6rem 1.1rem;
   border: 2px solid var(--cream);

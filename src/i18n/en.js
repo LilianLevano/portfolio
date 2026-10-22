@@ -89,6 +89,7 @@ export default {
     intro: 'A selection of exercise and school projects, with the code on GitHub.',
     stackLabel: 'Techniques',
     link: 'View on GitHub',
+    liveLink: 'View live site',
     newTab: '(opens in a new tab)',
     items: {
       comichub: {

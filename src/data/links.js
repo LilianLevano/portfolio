@@ -21,6 +21,7 @@ export const PROJECTS = [
   {
     id: 'telify',
     url: 'https://github.com/LilianLevano/StaticWebProjectWebShop',
+    live: 'https://telify.netlify.app/',
     stack: ['HTML', 'CSS', 'Responsive design'],
     accent: 'ink',
   },
