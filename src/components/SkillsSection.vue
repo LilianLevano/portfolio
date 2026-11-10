@@ -271,16 +271,46 @@ const variants = ['up', 'scale', 'up', 'scale', 'up', 'left', 'right']
   }
 }
 
-/* --- Java Spring Boot: green accents, little spring bounce --- */
+/* --- Java Spring Boot: green accents, spring bounce, leaf sprouts, ring spins --- */
 .skill--spring {
   --accent: #6db33f;
   --accent-text: #8fd162;
   --glow: rgb(109 179 63 / 0.4);
 }
 
+.skill--spring :deep(.spring-leaf) {
+  transform-box: fill-box;
+  transform-origin: 0% 100%;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), fill-opacity 0.4s;
+}
+
+.skill--spring :deep(.spring-ring) {
+  transform-box: fill-box;
+  transform-origin: center;
+  stroke-dasharray: 100 20;
+}
+
 .skill--spring:hover .skill__icons :deep(.icon),
 .skill--spring:focus-visible .skill__icons :deep(.icon) {
   animation: boing 0.9s cubic-bezier(0.28, 0.84, 0.42, 1);
+  filter: drop-shadow(0 0 10px rgb(109 179 63 / 0.85));
+}
+
+.skill--spring:hover :deep(.spring-leaf),
+.skill--spring:focus-visible :deep(.spring-leaf) {
+  transform: scale(1.15) rotate(-12deg);
+  fill-opacity: 0.6;
+}
+
+.skill--spring:hover :deep(.spring-ring),
+.skill--spring:focus-visible :deep(.spring-ring) {
+  animation: spring-spin 2.4s linear infinite;
+}
+
+@keyframes spring-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes boing {
