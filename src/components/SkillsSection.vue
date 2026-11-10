@@ -322,25 +322,44 @@ const variants = ['up', 'scale', 'up', 'scale', 'up', 'left', 'right']
   100% { transform: translateY(0) scale(1, 1); }
 }
 
-/* --- Web development: browser window, code brackets slide --- */
+/* --- Web development: browser window pops, brackets spread, slash blinks --- */
 .skill--webdev {
   --accent: var(--red-bright);
   --glow: rgb(255 90 95 / 0.35);
 }
 
-.skill--webdev :deep(.code) {
-  stroke-dasharray: 60;
-  stroke-dashoffset: 0;
+.skill--webdev :deep(.code-left),
+.skill--webdev :deep(.code-right),
+.skill--webdev :deep(.code-slash) {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.skill--webdev:hover :deep(.code),
-.skill--webdev:focus-visible :deep(.code) {
-  animation: retype 0.9s var(--ease-out);
+.skill--webdev:hover .skill__icons :deep(.icon),
+.skill--webdev:focus-visible .skill__icons :deep(.icon) {
+  transform: scale(1.12) translateY(-2px);
+  filter: drop-shadow(0 0 10px rgb(255 90 95 / 0.8));
 }
 
-@keyframes retype {
-  from {
-    stroke-dashoffset: 60;
+.skill--webdev:hover :deep(.code-left),
+.skill--webdev:focus-visible :deep(.code-left) {
+  transform: translateX(-3px);
+}
+
+.skill--webdev:hover :deep(.code-right),
+.skill--webdev:focus-visible :deep(.code-right) {
+  transform: translateX(3px);
+}
+
+.skill--webdev:hover :deep(.code-slash),
+.skill--webdev:focus-visible :deep(.code-slash) {
+  animation: slash-blink 0.8s steps(1) infinite;
+}
+
+@keyframes slash-blink {
+  50% {
+    opacity: 0.15;
   }
 }
 

@@ -18,7 +18,9 @@ defineProps({
       <path d="M4 15h40" class="frame" />
       <circle cx="9" cy="11.5" r="1.3" class="dot" />
       <circle cx="13.5" cy="11.5" r="1.3" class="dot" />
-      <path d="M19 23l-5 5 5 5M29 23l5 5-5 5M26 21l-4 14" class="code" />
+      <path d="M19 23l-5 5 5 5" class="code code-left" />
+      <path d="M29 23l5 5-5 5" class="code code-right" />
+      <path d="M26 21l-4 14" class="code code-slash" />
     </template>
 
     <template v-else-if="name === 'javascript'">
