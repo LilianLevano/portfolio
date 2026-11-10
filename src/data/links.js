@@ -25,6 +25,12 @@ export const PROJECTS = [
     stack: ['HTML', 'CSS', 'Responsive design'],
     accent: 'ink',
   },
+  {
+    id: 'pagestock',
+    url: 'https://github.com/LilianLevano/pagestock',
+    stack: ['Java', 'Spring Boot', 'Spring Security', 'JWT', 'MySQL', 'Laravel', 'Blade', 'Tailwind CSS'],
+    accent: 'red',
+  },
 ]
 
 // Game covers in public/ (width/height are the files' own pixel sizes).

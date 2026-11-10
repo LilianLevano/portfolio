@@ -110,6 +110,12 @@ export default {
         description:
           'Une boutique en ligne réalisée uniquement en HTML et CSS, avec une page par produit et un design responsive.',
       },
+      pagestock: {
+        title: 'PageStock',
+        type: "Projet d'examen Application Architecture (librairie fictive)",
+        description:
+          "Une librairie avec une API REST Spring Boot et un frontend Laravel : rechercher, réserver et évaluer des livres, avec connexion par JWT et un panneau d'administration qui gère le catalogue et le stock.",
+      },
     },
   },
   interests: {

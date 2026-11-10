@@ -109,6 +109,12 @@ export default {
         description:
           'A web shop built with only HTML and CSS, with a separate page per product and a responsive design.',
       },
+      pagestock: {
+        title: 'PageStock',
+        type: 'Application Architecture exam project (fictional bookshop)',
+        description:
+          'A bookshop with a Spring Boot REST API and a Laravel front end: search, reserve and review books, with JWT login and an admin panel that manages the catalogue and stock.',
+      },
     },
   },
   interests: {

@@ -110,6 +110,12 @@ export default {
         description:
           'Een webshop gebouwd met enkel HTML en CSS, met een aparte pagina per product en een responsive ontwerp.',
       },
+      pagestock: {
+        title: 'PageStock',
+        type: 'Examenproject Application Architecture (fictieve boekhandel)',
+        description:
+          'Een boekhandel met een Spring Boot REST API en een Laravel-frontend: boeken zoeken, reserveren en reviewen, met inloggen via JWT en een adminpaneel dat de catalogus en de voorraad beheert.',
+      },
     },
   },
   interests: {
